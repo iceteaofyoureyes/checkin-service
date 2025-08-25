@@ -1,0 +1,25 @@
+app:
+  upload:
+    max-file-size: 5242880 # 5MB
+  jwt:
+    secret: cu$t0mS3cR3t
+    expirationMs: 3600000
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cis
+    username: cis
+    password: CIS#2025
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+    drop-first: true
+
+logging:
+  level:
+    org.hibernate.type.descriptor.sql: TRACE
