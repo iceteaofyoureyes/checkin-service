@@ -1,0 +1,55 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="1.0.0-007-init-role-permission" author="hiepnh" context="default">
+        <!-- Insert role -->
+        <insert tableName="role">
+            <column name="role_name" value="ADMIN"/>
+            <column name="description" value="Administrator"/>
+        </insert>
+        <insert tableName="role">
+            <column name="role_name" value="USER"/>
+            <column name="description" value="Normal user"/>
+        </insert>
+
+        <!-- Insert permission -->
+        <insert tableName="permission">
+            <column name="permission_name" value="USER.CREATE"/>
+            <column name="description" value="Tạo người dùng"/>
+        </insert>
+        <insert tableName="permission">
+            <column name="permission_name" value="USER.MANAGE"/>
+            <column name="description" value="Quản lý người dùng"/>
+        </insert>
+
+        <!-- Link role_permission -->
+        <insert tableName="role_permission">
+            <column name="role_id" value="1"/> <!-- ADMIN -->
+            <column name="permission_id" value="1"/> <!-- USER.CREATE -->
+        </insert>
+        <insert tableName="role_permission">
+            <column name="role_id" value="1"/>
+            <column name="permission_id" value="2"/> <!-- USER.MANAGE -->
+        </insert>
+        <insert tableName="role_permission">
+            <column name="role_id" value="2"/> <!-- USER -->
+            <column name="permission_id" value="1"/> <!-- USER.CREATE -->
+        </insert>
+
+        <!-- Insert default admin user -->
+        <insert tableName="users">
+            <column name="username" value="admin"/>
+            <column name="email" value="admin@example.com"/>
+            <column name="password" value="$2a$10$exqVcLjjMWgJ800KKbldhODR1FtimaBo1E3RDGabOIcPgx/eI0bkS"/> <!-- bcrypt hash -->
+            <column name="avatar_url" value=""/>
+        </insert>
+
+        <!-- Link admin user_role -->
+        <insert tableName="user_role">
+            <column name="user_id" value="1"/>
+            <column name="role_id" value="1"/> <!-- ADMIN -->
+        </insert>
+    </changeSet>
+</databaseChangeLog>

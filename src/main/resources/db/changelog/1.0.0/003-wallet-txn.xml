@@ -1,0 +1,36 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+    <changeSet id="1.0.0-003-wallet-txn" author="hiepnh">
+        <createTable tableName="wallet_txn" remarks="Ledger of wallet transactions. Unique idempotency key for safe retries">
+            <column name="transaction_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="wallet_id" type="BIGINT">
+                <constraints nullable="false" referencedTableName="wallets" referencedColumnNames="wallet_id" foreignKeyName="fk_txn_wallet"/>
+            </column>
+            <column name="amount" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="txn_type" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ref_id" type="BIGINT"/>
+            <column name="txn_ref_code" type="VARCHAR(128)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="wallet_txn" columnNames="txn_ref_code" constraintName="uq_wallet_txn_idem" deferrable="false" initiallyDeferred="false" disabled="false"/>
+
+        <createIndex tableName="wallet_txn" indexName="idx_txn_wallet_created">
+            <column name="wallet_id"/>
+            <column name="created_at"/>
+        </createIndex>
+
+    </changeSet>
+</databaseChangeLog>

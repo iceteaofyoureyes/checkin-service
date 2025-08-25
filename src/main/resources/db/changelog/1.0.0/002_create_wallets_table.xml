@@ -1,0 +1,36 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+    <changeSet id="1.0.0-002-create-wallets-table" author="hiepnh">
+        <createTable tableName="wallets" remarks="User wallets (REWARD_POINT etc.). One per type.">
+            <column name="wallet_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="wallet_code" type="VARCHAR()">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" referencedTableName="users" referencedColumnNames="user_id" foreignKeyName="fk_wallet_user"/>
+            </column>
+            <column name="wallet_type" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="balance" type="BIGINT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMPTZ" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="wallets" columnNames="user_id, wallet_type" constraintName="uq_wallet_user_type"/>
+        <createIndex tableName="wallets" indexName="idx_wallet_user">
+            <column name="user_id"/>
+        </createIndex>
+
+    </changeSet>
+</databaseChangeLog>

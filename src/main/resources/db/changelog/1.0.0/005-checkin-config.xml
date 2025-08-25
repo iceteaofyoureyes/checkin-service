@@ -1,0 +1,33 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+    <changeSet id="1.0.0-005-checkin-config" author="hiepnh">
+        <createTable tableName="checkin_config" remarks="Active config: time windows, weekday points, monthly limit.">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="monthly_limit_days" type="INT" defaultValueNumeric="7">
+                <constraints nullable="false"/>
+            </column>
+            <column name="config" type="JSONB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_windows" type="JSONB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMPTZ" defaultValueComputed="NOW()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- ensure only one active row -->
+        <sql>
+            CREATE UNIQUE INDEX uq_cfg_active ON checkin_config ((true)) WHERE is_active = true;
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>
