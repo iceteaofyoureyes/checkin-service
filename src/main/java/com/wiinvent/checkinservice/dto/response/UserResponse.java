@@ -1,0 +1,15 @@
+package com.wiinvent.checkinservice.dto.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+@Builder
+public class UserResponse {
+    private Long userId;
+    private String username;
+    private String email;
+    private String avatarUrl;
+}
