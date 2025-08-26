@@ -35,6 +35,14 @@
             <column name="permission_name" value="CHECKIN.VIEW_MONTH_STATUS"/>
             <column name="description" value="Get Month check-in status"/>
         </insert>
+        <insert tableName="permission">
+            <column name="permission_name" value="TRANSACTION.GET_POINT_REWARD_HISTORY"/>
+            <column name="description" value="Get self point reward history"/>
+        </insert>
+        <insert tableName="permission">
+            <column name="permission_name" value="TRANSACTION.GET_SELF_TRANSACTIONS"/>
+            <column name="description" value="Get Self transactions"/>
+        </insert>
 
         <!-- Link role_permission -->
         <insert tableName="role_permission">
@@ -57,6 +65,14 @@
             <column name="role_id" value="1"/>
             <column name="permission_id" value="5"/> <!-- CHECKIN.VIEW_MONTH_STATUS -->
         </insert>
+        <insert tableName="role_permission">
+            <column name="role_id" value="1"/>
+            <column name="permission_id" value="6"/> <!-- TRANSACTION.GET_POINT_REWARD_HISTORY -->
+        </insert>
+        <insert tableName="role_permission">
+            <column name="role_id" value="1"/>
+            <column name="permission_id" value="7"/> <!-- TRANSACTION.GET_SELF_TRANSACTIONS -->
+        </insert>
 
         <insert tableName="role_permission">
             <column name="role_id" value="2"/> <!-- USER -->
@@ -69,6 +85,14 @@
         <insert tableName="role_permission">
             <column name="role_id" value="2"/>
             <column name="permission_id" value="5"/> <!-- CHECKIN.VIEW_MONTH_STATUS -->
+        </insert>
+        <insert tableName="role_permission">
+            <column name="role_id" value="2"/>
+            <column name="permission_id" value="6"/> <!-- TRANSACTION.GET_POINT_REWARD_HISTORY -->
+        </insert>
+        <insert tableName="role_permission">
+            <column name="role_id" value="2"/>
+            <column name="permission_id" value="7"/> <!-- TRANSACTION.GET_SELF_TRANSACTIONS -->
         </insert>
 
         <!-- Insert default admin user -->
