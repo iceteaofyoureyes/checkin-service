@@ -1,5 +1,6 @@
 package com.wiinvent.checkinservice.config.security;
 
+import com.wiinvent.checkinservice.dto.CustomUserDetails;
 import com.wiinvent.checkinservice.util.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -53,13 +54,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             List<String> permissions = jwtUtils.getPermissions(token); // từ JWT
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.addAll(permissions.stream()
+            List<GrantedAuthority> authorities = new ArrayList<>(permissions.stream()
                     .map(SimpleGrantedAuthority::new)
                     .toList());
-
+            UserDetails userDetails = new CustomUserDetails(null, username, null, authorities);
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
