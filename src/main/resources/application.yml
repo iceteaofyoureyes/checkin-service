@@ -20,6 +20,12 @@ spring:
     enabled: true
     drop-first: true
 
+redisson:
+  singleServerConfig:
+    address: redis://127.0.0.1:6379
+    password: admin@123
+    database: 0
+
 logging:
   level:
     org.hibernate.type.descriptor.sql: TRACE
