@@ -14,5 +14,6 @@
     <include file="db/changelog/1.0.0/005-checkin-config.xml"/>
     <include file="db/changelog/1.0.0/006-auth-tables.xml"/>
     <include file="db/changelog/1.0.0/007-init-auth-data.xml"/>
+    <include file="db/changelog/1.0.0/008-init-checkin-config-data.xml"/>
 
 </databaseChangeLog>

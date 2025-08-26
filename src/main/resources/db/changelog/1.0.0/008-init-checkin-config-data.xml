@@ -1,0 +1,16 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet id="1.0.0-008-init-checkin-config-data" author="hiepnh" context="default">
+        <!-- Insert role -->
+        <insert tableName="checkin_config">
+            <column name="is_active" value="true"/>
+            <column name="monthly_limit_days" value="7"/>
+            <column name="config" value='{"pointConfigs": [1, 2, 3, 5, 8, 13, 21]}'/>
+            <column name="time_windows" value='[{"start":"09:00","end":"11:00"}, {"start":"19:00","end":"21:00"}]'/>
+            <column name="updated_at" valueComputed="NOW()"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
