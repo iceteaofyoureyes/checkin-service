@@ -14,22 +14,22 @@
                              referencedTableName="users" referencedColumnNames="user_id"/>
             </column>
 
-            <column name="checkin_time" type="TIMESTAMPTZ" defaultValueComputed="NOW()">
+            <column name="checkin_time" type="TIMESTAMPTZ">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="checkin_day" type="DATE">
+            <column name="checkin_date" type="DATE">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="created_at" type="TIMESTAMPTZ" defaultValueComputed="NOW()">
+            <column name="created_at" type="TIMESTAMPTZ">
                 <constraints nullable="false"/>
             </column>
         </createTable>
 
         <createIndex tableName="checkin_log" indexName="uk_checkin_user_day_utc" unique="true">
             <column name="user_id"/>
-            <column name="checkin_day"/>
+            <column name="checkin_date"/>
         </createIndex>
 
     </changeSet>

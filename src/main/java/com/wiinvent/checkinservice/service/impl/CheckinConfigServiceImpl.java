@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -77,5 +78,12 @@ public class CheckinConfigServiceImpl implements CheckinConfigService {
             log.error(e.getMessage());
             throw new AppException(ErrorCode.UNKNOWN_EXCEPTION, "Error handling cache for checkin config");
         }
+    }
+
+    @Override
+    public int resolvePointForNth(int NthDate) {
+        CheckinConfigDto configDto = getActiveConfig();
+        List<Integer> pointConfigs = configDto.getPayload().getPointConfigs();
+        return pointConfigs.get(NthDate - 1);
     }
 }

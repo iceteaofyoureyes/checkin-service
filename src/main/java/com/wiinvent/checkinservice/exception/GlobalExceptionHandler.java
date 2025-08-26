@@ -42,4 +42,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<BaseResponse<?>> handleAllOtherExceptions(Exception ex) {
+        log.error("Unexpected error occurred", ex);
+
+        ErrorCode errorCode = ErrorCode.UNKNOWN_EXCEPTION;
+        BaseResponse<?> apiResponse = BaseResponse.builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .build();
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
+    }
 }

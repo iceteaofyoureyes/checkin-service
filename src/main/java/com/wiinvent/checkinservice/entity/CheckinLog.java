@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Entity
 @Table(
@@ -33,6 +35,15 @@ public class CheckinLog {
     @Column(name = "checkin_time", nullable = false, columnDefinition = "TIMESTAMPTZ")
     private OffsetDateTime checkinTime;
 
+    @Column(name = "checkin_date", nullable = false)
+    private LocalDate checkinDate;
+
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMPTZ")
     private OffsetDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.checkinTime = OffsetDateTime.now(ZoneOffset.UTC);
+        this.createdAt = OffsetDateTime.now(ZoneOffset.UTC);
+    }
 }

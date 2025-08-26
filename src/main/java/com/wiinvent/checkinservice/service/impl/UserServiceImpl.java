@@ -4,12 +4,15 @@ import com.wiinvent.checkinservice.dto.request.CreateUserRequest;
 import com.wiinvent.checkinservice.dto.response.UserResponse;
 import com.wiinvent.checkinservice.entity.Role;
 import com.wiinvent.checkinservice.entity.User;
+import com.wiinvent.checkinservice.entity.Wallet;
+import com.wiinvent.checkinservice.entity.enums.WalletType;
 import com.wiinvent.checkinservice.exception.AppException;
 import com.wiinvent.checkinservice.exception.ErrorCode;
 import com.wiinvent.checkinservice.exception.ResourceNotFoundException;
 import com.wiinvent.checkinservice.mapper.UserMapper;
 import com.wiinvent.checkinservice.repository.RoleRepository;
 import com.wiinvent.checkinservice.repository.UserRepository;
+import com.wiinvent.checkinservice.repository.WalletRepository;
 import com.wiinvent.checkinservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +27,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final WalletRepository walletRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileService fileService;
     private final UserMapper userMapper;
@@ -46,8 +50,16 @@ public class UserServiceImpl implements UserService {
         user.setAvatarUrl(avatarUrl);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRoles(roles);
+        user = userRepository.save(user);
 
-        return userMapper.toUserResponse(userRepository.save(user));
+        Wallet wallet = new Wallet();
+        wallet.setUser(user);
+        wallet.setWalletCode(String.format("%s-%d", WalletType.LOTUS.name(), user.getUserId()));
+        wallet.setWalletType(WalletType.LOTUS);
+        wallet.setBalance(0L);
+        walletRepository.save(wallet);
+
+        return userMapper.toUserResponse(user);
     }
 
     @Override

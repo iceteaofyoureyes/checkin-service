@@ -1,4 +1,5 @@
 app:
+  default-timezone: UTC
   upload:
     max-file-size: 5242880 # 5MB
   jwt:
@@ -6,7 +7,7 @@ app:
     expirationMs: 3600000
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/cis
+    url: jdbc:postgresql://localhost:5432/cis?currentSchema=public&serverTimezone=UTC
     username: cis
     password: CIS#2025
     driver-class-name: org.postgresql.Driver
@@ -15,6 +16,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc.time_zone: UTC
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true

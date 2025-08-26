@@ -1,5 +1,6 @@
 package com.wiinvent.checkinservice.config.security;
 
+import com.wiinvent.checkinservice.dto.CustomUserDetails;
 import com.wiinvent.checkinservice.entity.User;
 import com.wiinvent.checkinservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        return new org.springframework.security.core.userdetails.User(
+        return new CustomUserDetails(
+                user.getUserId(),
                 user.getUsername(),
                 user.getPassword(),
                 Collections.emptyList()
