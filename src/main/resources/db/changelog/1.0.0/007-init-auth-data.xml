@@ -17,11 +17,15 @@
         <!-- Insert permission -->
         <insert tableName="permission">
             <column name="permission_name" value="USER.CREATE"/>
-            <column name="description" value="Tạo người dùng"/>
+            <column name="description" value="Create user"/>
         </insert>
         <insert tableName="permission">
             <column name="permission_name" value="USER.MANAGE"/>
-            <column name="description" value="Quản lý người dùng"/>
+            <column name="description" value="Manage user"/>
+        </insert>
+        <insert tableName="permission">
+            <column name="permission_name" value="USER.SELF_PROFILE"/>
+            <column name="description" value="Get Self Profile"/>
         </insert>
 
         <!-- Link role_permission -->
@@ -34,8 +38,13 @@
             <column name="permission_id" value="2"/> <!-- USER.MANAGE -->
         </insert>
         <insert tableName="role_permission">
+            <column name="role_id" value="1"/>
+            <column name="permission_id" value="3"/> <!-- USER.SELF_PROFILE -->
+        </insert>
+
+        <insert tableName="role_permission">
             <column name="role_id" value="2"/> <!-- USER -->
-            <column name="permission_id" value="1"/> <!-- USER.CREATE -->
+            <column name="permission_id" value="3"/> <!-- USER.SELF_PROFILE -->
         </insert>
 
         <!-- Insert default admin user -->

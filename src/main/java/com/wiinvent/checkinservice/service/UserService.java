@@ -6,4 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
     UserResponse createUser(CreateUserRequest request, MultipartFile file);
+    UserResponse getUserProfileByUsername(String username);
+    UserResponse getUserProfileById(Long userId);
 }

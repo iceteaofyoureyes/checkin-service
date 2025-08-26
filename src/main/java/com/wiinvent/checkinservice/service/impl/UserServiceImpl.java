@@ -6,6 +6,7 @@ import com.wiinvent.checkinservice.entity.Role;
 import com.wiinvent.checkinservice.entity.User;
 import com.wiinvent.checkinservice.exception.AppException;
 import com.wiinvent.checkinservice.exception.ErrorCode;
+import com.wiinvent.checkinservice.exception.ResourceNotFoundException;
 import com.wiinvent.checkinservice.mapper.UserMapper;
 import com.wiinvent.checkinservice.repository.RoleRepository;
 import com.wiinvent.checkinservice.repository.UserRepository;
@@ -47,5 +48,21 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
 
         return userMapper.toUserResponse(userRepository.save(user));
+    }
+
+    @Override
+    public UserResponse getUserProfileByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        return userMapper.toUserResponse(user);
+    }
+
+    @Override
+    public UserResponse getUserProfileById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        return userMapper.toUserResponse(user);
     }
 }
