@@ -1,8 +1,12 @@
 package com.wiinvent.checkinservice.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.wiinvent.checkinservice.dto.CheckinConfigDto;
+import com.wiinvent.checkinservice.dto.CheckinDayDTO;
 import com.wiinvent.checkinservice.dto.response.CheckinResponse;
+import com.wiinvent.checkinservice.dto.response.MonthCheckinResponse;
 import com.wiinvent.checkinservice.entity.CheckinLog;
+import com.wiinvent.checkinservice.entity.User;
 import com.wiinvent.checkinservice.entity.Wallet;
 import com.wiinvent.checkinservice.entity.WalletTransaction;
 import com.wiinvent.checkinservice.entity.enums.TransactionType;
@@ -25,6 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -43,7 +50,10 @@ public class CheckinServiceImpl implements CheckinService {
 
     @Override
     @Transactional
-    public CheckinResponse checkin(Long userId, ZoneId userZone) {
+    public CheckinResponse checkin(String username, ZoneId userZone) {
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Long userId = user.getUserId();
         LocalDate utcDate = computeUtcStoredDate(userZone);
         String lockKey = buildLockKey(utcDate, userId);
         String cacheKey = buildCacheKey(utcDate, userId);
@@ -83,7 +93,7 @@ public class CheckinServiceImpl implements CheckinService {
             int pointToAdd = configService.resolvePointForNth(timesThisMonth + 1);
 
             // Persist checkin log + txn
-            persistCheckin(userId, utcDate, pointToAdd, wallet);
+            persistCheckin(user, utcDate, pointToAdd, wallet);
 
             // process claim reward
             processReward(wallet, pointToAdd);
@@ -118,6 +128,47 @@ public class CheckinServiceImpl implements CheckinService {
         }
     }
 
+    @Override
+    public MonthCheckinResponse getMonthCheckins(String username, ZoneId userZone) {
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Long userId = user.getUserId();
+        LocalDate nowUtc = LocalDate.now(ZoneOffset.UTC);
+        LocalDate startOfMonth = nowUtc.withDayOfMonth(1);
+        LocalDate endOfMonth = nowUtc.withDayOfMonth(nowUtc.lengthOfMonth());
+
+        List<CheckinLog> checkinLogs = checkinLogRepo
+                .findByUserAndDateRange(userId, startOfMonth, endOfMonth);
+
+        checkinLogs.sort(Comparator.comparing(CheckinLog::getCheckinTime));
+        CheckinConfigDto config = configService.getActiveConfig();
+        List<Integer> pointConfigs = config.getPayload().getPointConfigs();
+        List<CheckinDayDTO> monthCheckins = new ArrayList<>();
+
+        for (int i = 0; i < pointConfigs.size(); i++) {
+            int nth = i + 1;
+            CheckinDayDTO dto = CheckinDayDTO.builder()
+                    .name("Day " + nth)
+                    .build();
+            dto.setPointAward(pointConfigs.get(i));
+
+            if (i < checkinLogs.size()) {
+                CheckinLog  checkinLog = checkinLogs.get(i);
+                OffsetDateTime utcTime = checkinLog.getCheckinTime();
+                ZonedDateTime userTime = utcTime.atZoneSameInstant(userZone);
+
+                dto.setChecked(true);
+                dto.setCheckinDate(userTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+            } else {
+                dto.setChecked(false);
+                dto.setCheckinDate(null);
+            }
+
+            monthCheckins.add(dto);
+        }
+
+        return new MonthCheckinResponse(monthCheckins);
+    }
 
     private LocalDate computeUtcStoredDate(ZoneId userZone) {
         Instant now = Instant.now();
@@ -145,21 +196,21 @@ public class CheckinServiceImpl implements CheckinService {
         return checkinLogRepo.countByUserIdAndCheckinDateBetween(userId, startDateOfMonth, endDateOfMonth);
     }
 
-    private void processReward(Wallet wallet , long pointToAdd) {
+    private void processReward(Wallet wallet, long pointToAdd) {
         wallet.setBalance(wallet.getBalance() + pointToAdd);
         wallet.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         walletRepo.save(wallet);
     }
 
-    private void persistCheckin(Long userId, LocalDate utcDate, long pointToAdd, Wallet wallet) {
+    private void persistCheckin(User user, LocalDate utcDate, long pointToAdd, Wallet wallet) {
         CheckinLog checkinLog = checkinLogRepo.save(CheckinLog.builder()
-                .user(userRepo.getReferenceById(userId))
+                .user(user)
                 .checkinDate(utcDate)
                 .checkinTime(OffsetDateTime.now(ZoneOffset.UTC))
                 .createdAt(OffsetDateTime.now(ZoneOffset.UTC))
                 .build());
 
-        String txnRef = generateTxnRef(userId, utcDate);
+        String txnRef = generateTxnRef(user.getUserId(), utcDate);
         try {
             txnRepo.save(WalletTransaction.builder()
                     .wallet(wallet)
@@ -170,7 +221,7 @@ public class CheckinServiceImpl implements CheckinService {
                     .createdAt(OffsetDateTime.now(ZoneOffset.UTC))
                     .build());
         } catch (DataIntegrityViolationException e) {
-            log.warn("TxRef duplicate (idempotent case) for refCode={}, userId={}", txnRef, userId);
+            log.warn("TxRef duplicate (idempotent case) for refCode={}, userId={}", txnRef, user.getUserId());
             throw new AppException(ErrorCode.UNKNOWN_EXCEPTION, "Error has occurs");
         }
     }

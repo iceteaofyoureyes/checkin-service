@@ -18,4 +18,9 @@ public interface CheckinLogRepository extends JpaRepository<CheckinLog, Long> {
     int countByUserIdAndCheckinDateBetween(@Param("userId") Long userId,
                                            @Param("start") LocalDate startInclusive,
                                            @Param("end") LocalDate endExclusive);
+
+    @Query("select c from CheckinLog c where c.user.id = :userId and c.checkinDate between :start and :end")
+    List<CheckinLog> findByUserAndDateRange(@Param("userId") Long userId,
+                                            @Param("start") LocalDate start,
+                                            @Param("end") LocalDate end);
 }
