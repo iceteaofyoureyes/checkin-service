@@ -1,0 +1,527 @@
+{
+	"info": {
+		"_postman_id": "1af202b6-fa88-4c2b-949a-af5b1af12e31",
+		"name": "wiinvent",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43194614"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "Create user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "hiepnh",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Admin@123",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "hiepnh@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/C:/Users/LENOVO/Downloads/300.jfif"
+								},
+								{
+									"key": "roleNames",
+									"value": "USER",
+									"type": "text"
+								},
+								{
+									"key": "roleNames",
+									"value": "ADMIN",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseURL}}/users/create",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Self Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/me",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/2/profile",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"2",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Login Admin Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"console.log(\"Response status:\", pm.response.code);\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    let responseJson = {};\r",
+									"    try {\r",
+									"        responseJson = pm.response.json();\r",
+									"    } catch (e) {\r",
+									"        console.error(\"Response không phải JSON:\", e);\r",
+									"    }\r",
+									"    \r",
+									"    const token = responseJson.data.accessToken;\r",
+									"\r",
+									"    if (token) {\r",
+									"        pm.collectionVariables.set(\"admin_token\", token);\r",
+									"        console.log(\"Access token đã set vào Collection Variable:\", token);\r",
+									"    } else {\r",
+									"        console.warn(\"Không tìm thấy access_token trong response\");\r",
+									"    }\r",
+									"} else {\r",
+									"    console.error(\"API không trả về 200 OK. Status code:\", pm.response.code);\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"Admin@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"console.log(\"Response status:\", pm.response.code);\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    let responseJson = {};\r",
+									"    try {\r",
+									"        responseJson = pm.response.json();\r",
+									"    } catch (e) {\r",
+									"        console.error(\"Response không phải JSON:\", e);\r",
+									"    }\r",
+									"    \r",
+									"    const token = responseJson.data.accessToken;\r",
+									"\r",
+									"    if (token) {\r",
+									"        pm.collectionVariables.set(\"access_token\", token);\r",
+									"        console.log(\"Access token đã set vào Collection Variable:\", token);\r",
+									"    } else {\r",
+									"        console.warn(\"Không tìm thấy access_token trong response\");\r",
+									"    }\r",
+									"} else {\r",
+									"    console.error(\"API không trả về 200 OK. Status code:\", pm.response.code);\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInBlcm1pc3Npb25zIjpbIlVTRVIuQ1JFQVRFIiwiVVNFUi5NQU5BR0UiLCJVU0VSLlNFTEZfUFJPRklMRSJdLCJyb2xlcyI6WyJBRE1JTiJdLCJleHAiOjE3NTYxODcyNTUsImlhdCI6MTc1NjE4MzY1NX0.x-OnMiAfzKysnDJWDc6lXvOQ_cHZfnjHem4GzFzIPgqIefWGA2uwcZL378n1UXNu9fOK6tFMNK4DqtQeFRP5kw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"hiepnh\",\r\n    \"password\": \"Admin@123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Checkin",
+			"item": [
+				{
+					"name": "User Checkin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Timezone",
+								"value": "Asia/Ho_Chi_Minh",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/checkin",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"checkin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Month status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Timezone",
+								"value": "Asia/Ho_Chi_Minh",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/checkin/month-status",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"checkin",
+								"month-status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "audit",
+			"item": [
+				{
+					"name": "Get Point reward history",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Timezone",
+								"value": "Asia/Ho_Chi_Minh",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/transactions/point-reward-history?page=0&size=10&sort=asc",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"transactions",
+								"point-reward-history"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Self transactions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Timezone",
+								"value": "Asia/Ho_Chi_Minh",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/transactions/me?page=0&size=10&sort=desc",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"transactions",
+								"me"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "desc"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "payment",
+			"item": [
+				{
+					"name": "Simulate payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Timezone",
+								"value": "Asia/Ho_Chi_Minh",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : 2,\r\n    \"amount\" : 1,\r\n    \"txnRefCode\" : \"PAY_01_1756241860_azxmxnc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/payment/simulate-payment",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"payment",
+								"simulate-payment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://192.168.1.46:8019"
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "admin_token",
+			"value": ""
+		}
+	]
+}
