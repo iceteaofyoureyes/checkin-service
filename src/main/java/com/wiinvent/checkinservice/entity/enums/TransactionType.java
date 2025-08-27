@@ -1,5 +1,5 @@
 package com.wiinvent.checkinservice.entity.enums;
 
 public enum TransactionType {
-    REWARD, PURCHASE, REFUND, TRANSFER, REDEEM, RECEIVE
+    REWARD, PAYMENT, PURCHASE, REFUND, TRANSFER, REDEEM, RECEIVE
 }

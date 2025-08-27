@@ -43,6 +43,10 @@
             <column name="permission_name" value="TRANSACTION.GET_SELF_TRANSACTIONS"/>
             <column name="description" value="Get Self transactions"/>
         </insert>
+        <insert tableName="permission">
+            <column name="permission_name" value="PAYMENT.SIMULATE_PAYMENT"/>
+            <column name="description" value="Simulate payment to deduct point from user wallet"/>
+        </insert>
 
         <!-- Link role_permission -->
         <insert tableName="role_permission">
@@ -72,6 +76,10 @@
         <insert tableName="role_permission">
             <column name="role_id" value="1"/>
             <column name="permission_id" value="7"/> <!-- TRANSACTION.GET_SELF_TRANSACTIONS -->
+        </insert>
+        <insert tableName="role_permission">
+            <column name="role_id" value="1"/>
+            <column name="permission_id" value="8"/> <!-- PAYMENT.SIMULATE_PAYMENT-->
         </insert>
 
         <insert tableName="role_permission">

@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface WalletTransactionRepository extends JpaRepository<WalletTransaction, Long> {
     Page<WalletTransaction> findByWalletUserUserIdAndTxnType(Long userId, TransactionType transactionType, Pageable pageable);
     Page<WalletTransaction> findByWalletUserUserId(Long userId, Pageable pageable);
+    boolean existsByRefCode(String refCode);
 }
