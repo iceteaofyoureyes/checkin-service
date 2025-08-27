@@ -17,8 +17,10 @@ import com.wiinvent.checkinservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -33,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
+    @Transactional
     public UserResponse createUser(CreateUserRequest request, MultipartFile avatar) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.BUSINESS_RULE_EXCEPTION, "This username is not available");
@@ -58,6 +61,8 @@ public class UserServiceImpl implements UserService {
         wallet.setWalletType(WalletType.LOTUS);
         wallet.setBalance(0L);
         walletRepository.save(wallet);
+
+        user.setWallets(List.of(wallet));
 
         return userMapper.toUserResponse(user);
     }
