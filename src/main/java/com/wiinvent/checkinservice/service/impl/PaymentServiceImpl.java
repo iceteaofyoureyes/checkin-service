@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -31,6 +32,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final CacheService cacheService;
 
     @Override
+    @Transactional
     public DeductPointsResponse simulatePayment(DeductPointsRequest request) {
         Long userId = request.getUserId();
         long amount = request.getAmount();
