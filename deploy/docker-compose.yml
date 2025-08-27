@@ -1,0 +1,54 @@
+networks:
+  cis-network:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: cis-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: cis
+      POSTGRES_PASSWORD: CIS#2025
+      POSTGRES_DB: cis
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - cis-network
+
+  redis:
+    image: redis:8
+    container_name: cis-redis
+    restart: always
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    volumes:
+      - redis-data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    networks:
+      - cis-network
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: checkin-service:latest
+    container_name: checkin-service
+    environment:
+      SERVER_PORT: 8081
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/cis?currentSchema=public&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: cis
+      SPRING_DATASOURCE_PASSWORD: CIS#2025
+      REDIS_ADDRESS: redis://redis:6379
+      REDIS_PASSWORD: admin@123
+    ports:
+      - "8081:8081"
+    networks:
+      - cis-network
+
+volumes:
+  postgres-data:
+  redis-data:

@@ -1,10 +1,12 @@
+server:
+  port: ${SERVER_PORT:8081}
 app:
-  default-timezone: UTC
+  default-timezone: ${APP_DEFAULT_TIMEZONE:UTC}
   upload:
-    max-file-size: 5242880 # 5MB
+    max-file-size: ${APP_UPLOAD_MAX_FILE_SIZE:5242880} # 5MB
   jwt:
-    secret: cu$t0mS3cR3t
-    expirationMs: 3600000
+    secret: ${APP_JWT_SECRET:cu$t0mS3cR3t}
+    expirationMs: ${APP_JWT_EXPIRATION_MS:3600000}
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/cis?currentSchema=public&serverTimezone=UTC
@@ -20,13 +22,13 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
-    drop-first: true
+    drop-first: false
 
 redisson:
   singleServerConfig:
-    address: redis://127.0.0.1:6379
-    password: admin@123
-    database: 0
+    address: ${REDIS_ADDRESS:redis://127.0.0.1:6379}
+    password: ${REDIS_PASSWORD:admin@123}
+    database: ${REDIS_DATABASE:0}
 
 logging:
   level:
