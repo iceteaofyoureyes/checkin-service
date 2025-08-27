@@ -30,7 +30,7 @@ public class CheckinConfig {
     @Column(name = "config", columnDefinition = "jsonb", nullable = false)
     private String config;
 
-    // JSONB, store time window list [{start:"09:00",end:"11:00"}, {start:"19:00",end:"21:00"}]
+    // JSONB, store time window list [{"start":"02:00","end":"04:00"}, {"start":"12:00","end":"14:00"}] UTC TIME
     @Column(name = "time_windows", columnDefinition = "jsonb", nullable = false)
     private String timeWindows;
 

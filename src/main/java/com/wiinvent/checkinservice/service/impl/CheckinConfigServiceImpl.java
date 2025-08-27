@@ -2,6 +2,7 @@ package com.wiinvent.checkinservice.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wiinvent.checkinservice.dto.CheckinConfigDto;
+import com.wiinvent.checkinservice.dto.TimeWindowDto;
 import com.wiinvent.checkinservice.entity.CheckinConfig;
 import com.wiinvent.checkinservice.exception.AppException;
 import com.wiinvent.checkinservice.exception.ErrorCode;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -85,5 +87,19 @@ public class CheckinConfigServiceImpl implements CheckinConfigService {
         CheckinConfigDto configDto = getActiveConfig();
         List<Integer> pointConfigs = configDto.getPayload().getPointConfigs();
         return pointConfigs.get(NthDate - 1);
+    }
+
+    @Override
+    public boolean isWithinTimeWindow(LocalTime utcTimeFromUserZone) {
+        CheckinConfigDto configDto = getActiveConfig();
+        List<TimeWindowDto> timeWindows = configDto.getTimeWindows();
+        for (TimeWindowDto w : timeWindows) {
+            LocalTime start = LocalTime.parse(w.getStart());
+            LocalTime end = LocalTime.parse(w.getEnd());
+            if (!utcTimeFromUserZone.isBefore(start) && !utcTimeFromUserZone.isAfter(end)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

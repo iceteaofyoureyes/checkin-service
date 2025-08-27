@@ -51,6 +51,13 @@ public class CheckinServiceImpl implements CheckinService {
     @Override
     @Transactional
     public CheckinResponse checkin(String username, ZoneId userZone) {
+        // todo update code handle case gui request nhung den server bi tre qua gio diem danh (client phai gui len thoi gian diem danh)
+
+        // check time windows
+        if (!isInValidTimeWindow(userZone)) {
+            throw new AppException(ErrorCode.BUSINESS_RULE_EXCEPTION, "Check-in failed. Not in valid time");
+        }
+
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Long userId = user.getUserId();
@@ -168,6 +175,13 @@ public class CheckinServiceImpl implements CheckinService {
         }
 
         return new MonthCheckinResponse(monthCheckins);
+    }
+
+    private boolean isInValidTimeWindow(ZoneId userZone) {
+        ZonedDateTime userNow = ZonedDateTime.now(userZone);
+        ZonedDateTime utcNow = userNow.withZoneSameInstant(ZoneOffset.UTC);
+        LocalTime utcTime = utcNow.toLocalTime();
+        return configService.isWithinTimeWindow(utcTime);
     }
 
     private LocalDate computeUtcStoredDate(ZoneId userZone) {
